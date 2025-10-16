@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelas XI RPL B SMK TI Cimahi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{
+            user-select: none;
+        }
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Gallery Modal - MODIFIED SIZE */
+        .gallery-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s;
+            overflow: auto;
+        }
+
+        .gallery-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .gallery-modal-content {
+            position: relative;
+            max-width: 50%;
+            /* Reduced from 70% to 50% for desktop */
+            max-height: 60vh;
+            /* Reduced from 70vh to 60vh for desktop */
+            margin: auto;
+            animation: zoomIn 0.4s;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            padding: 15px;
+            /* Add padding inside the modal */
+        }
+
+        .gallery-modal img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .gallery-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 3001;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-modal-close:hover {
+            color: #ff6b6b;
+            background: rgba(0, 0, 0, 0.7);
+            transform: rotate(90deg);
+        }
+
+        /* Gallery Item Styles */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 250px;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .gallery-overlay p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Media Queries for Gallery Modal */
+        @media (max-width: 768px) {
+            .gallery-modal.active {
+                padding: 10px;
+            }
+
+            .gallery-modal-content {
+                max-width: 90%;
+                /* For mobile - smaller than full width */
+                max-height: 80vh;
+                /* For mobile - smaller than full height */
+                padding: 10px;
+            }
+
+            .gallery-modal-close {
+                top: 10px;
+                right: 15px;
+                font-size: 30px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* For extra large screens */
+        @media (min-width: 1000px) {
+            .gallery-modal-content {
+                max-width: 50%;
+                /* Even smaller for extra large desktops */
+                max-height: 90vh;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+
+        /* Wali Kelas Card */
+        .wali-kelas-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wali-kelas-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .wali-kelas-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg) translateY(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .wali-kelas-card:hover::before {
+            transform: rotate(45deg) translateY(100%);
+        }
+
+        .wali-kelas-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wali-kelas-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Efek untuk kartu yang bisa diklik */
+        .clickable-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .clickable-card:active {
+            transform: scale(0.98);
+        }
+
+        /* Efek zoom pada foto */
+        .photo-zoom {
+            transition: transform 0.3s ease;
+        }
+
+        .clickable-card:hover .photo-zoom {
+            transform: scale(1.2);
+        }
+
+        /* Modal untuk foto profil */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            animation: fadeIn 0.3s;
+        }
+
+        .profile-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .profile-modal-content {
+                position: relative;
+                max-width: 80%;
+                max-height: 70vh;
+                animation: zoomIn 0.3s;
+            }
+        }
+
+        @media (min-width: 1000px) {
+            .profile-modal-content {
+                position: relative;
+                max-width: 25%;
+                max-height: 80vh;
+                animation: zoomIn 0.3s;
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .profile-modal img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .profile-modal-close:hover {
+            color: #ff6b6b;
+        }
+
+        .profile-info {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .profile-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Social Media Button Styles */
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            margin: 0 3px;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .instagram-btn {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .github-btn {
+            background: #333;
+        }
+
+        .youtube-btn {
+            background: #FF0000;
+        }
+
+        /* Special Animation for Haidar Card - Scroll Effect */
+        .special-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            height: auto;
+            /* Auto height to match other cards */
+            min-height: 200px;
+            /* Minimum height to ensure consistency */
+        }
+
+        .special-card .card-content {
+            position: relative;
+            width: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateY(0);
+        }
+
+        .special-card .card-content.scroll-up {
+            transform: translateY(-130%);
+        }
+
+        .special-card .card-content.scroll-down {
+            transform: translateY(0);
+        }
+
+        .special-card .alt-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateY(-100%);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .special-card .alt-content.scroll-up {
+            transform: translateY(-100%);
+        }
+
+        .special-card .alt-content.scroll-down {
+            transform: translateY(0);
+        }
+
+        .special-card .alt-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .special-card .alt-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .special-card .alt-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .special-card .alt-role {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 0.3rem;
+        }
+
+        .special-card .gamer-icon {
+            color: #facc15;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .special-card .alt-social {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        /* Pure CSS replacements for Tailwind classes */
+        .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        .bg-white {
+            background-color: #ffffff;
+        }
+
+        .bg-blue-600 {
+            background-color: #2563eb;
+        }
+
+        .bg-gradient-to-br {
+            background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+        }
+
+        .from-blue-600 {
+            --tw-gradient-from: #2563eb;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(37, 99, 235, 0));
+        }
+
+        .to-purple-700 {
+            --tw-gradient-to: #6d28d9;
+        }
+
+        .text-white {
+            color: #ffffff;
+        }
+
+        .text-gray-700 {
+            color: #374151;
+        }
+
+        .text-gray-800 {
+            color: #1f2937;
+        }
+
+        .text-blue-600 {
+            color: #2563eb;
+        }
+
+        .text-purple-600 {
+            color: #9333ea;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+
+        .text-4xl {
+            font-size: 2.25rem;
+        }
+
+        .text-6xl {
+            font-size: 3.75rem;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .rounded-xl {
+            border-radius: 0.75rem;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .py-20 {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+
+        .py-16 {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-12 {
+            margin-bottom: 3rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .mr-3 {
+            margin-right: 0.75rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .space-x-3>*+* {
+            margin-left: 0.75rem;
+        }
+
+        .space-x-6>*+* {
+            margin-left: 1.5rem;
+        }
+
+        .space-x-4>*+* {
+            margin-left: 1rem;
+        }
+
+        .space-y-2>*+* {
+            margin-top: 0.5rem;
+        }
+
+        .space-y-4>*+* {
+            margin-top: 1rem;
+        }
+
+        .max-w-md {
+            max-width: 28rem;
+        }
+
+        .max-w-4xl {
+            max-width: 56rem;
+        }
+
+        .max-w-6xl {
+            max-width: 72rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .h-20 {
+            height: 5rem;
+        }
+
+        .h-64 {
+            height: 16rem;
+        }
+
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        .overflow-x-auto {
+            overflow-x: auto;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .z-50 {
+            z-index: 50;
+        }
+
+        .sticky {
+            position: sticky;
+        }
+
+        .top-0 {
+            top: 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid-cols-6 {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .divide-y>*+* {
+            border-top-width: 1px;
+        }
+
+        .divide-gray-200>*+* {
+            border-color: #e5e7eb;
+        }
+
+        .border {
+            border-width: 1px;
+        }
+
+        .border-2 {
+            border-width: 2px;
+        }
+
+        .border-white {
+            border-color: #ffffff;
+        }
+
+        .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+
+        .rounded {
+            border-radius: 0.25rem;
+        }
+
+        .transition {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        .hover\:text-blue-200:hover {
+            color: #bfdbfe;
+        }
+
+        .hover\:bg-blue-50:hover {
+            background-color: #eff6ff;
+        }
+
+        .hover\:bg-white:hover {
+            background-color: #ffffff;
+        }
+
+        .hover\:text-blue-600:hover {
+            color: #2563eb;
+        }
+
+        .hover\:scale-105:hover {
+            transform: scale(1.05);
+        }
+
+        .hover\:bg-gray-50:hover {
+            background-color: #f9fafb;
+        }
+
+        .hover\:opacity-100:hover {
+            opacity: 1;
+        }
+
+        .focus\:outline-none:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        .focus\:border-blue-500:focus {
+            border-color: #3b82f6;
+        }
+
+        .focus\:bg-white:focus {
+            background-color: #ffffff;
+        }
+
+        .md\:flex {
+            display: flex;
+        }
+
+        .md\:hidden {
+            display: none;
+        }
+
+        .md\:text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .md\:text-4xl {
+            font-size: 2.25rem;
+        }
+
+        .md\:text-6xl {
+            font-size: 3.75rem;
+        }
+
+        .md\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .md\:grid-cols-6 {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+
+        .lg\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .lg\:grid-cols-6 {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+
+        .sm\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .sm\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .object-cover {
+            object-fit: cover;
+        }
+
+        .object-contain {
+            object-fit: contain;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .opacity-0 {
+            opacity: 0;
+        }
+
+        .group:hover .group-hover\:opacity-100 {
+            opacity: 1;
+        }
+
+        .bg-gradient-to-t {
+            background-image: linear-gradient(to top, var(--tw-gradient-stops));
+        }
+
+        .from-black\/70 {
+            --tw-gradient-from: rgba(0, 0, 0, 0.7);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(0, 0, 0, 0));
+        }
+
+        .to-transparent {
+            --tw-gradient-to: transparent;
+        }
+
+        .absolute.bottom-0 {
+            bottom: 0;
+        }
+
+        .absolute.left-0 {
+            left: 0;
+        }
+
+        .absolute.right-0 {
+            right: 0;
+        }
+
+        .absolute.top-0 {
+            top: 0;
+        }
+
+        .absolute.-top-1 {
+            top: -0.25rem;
+        }
+
+        .absolute.-right-1 {
+            right: -0.25rem;
+        }
+
+        .bg-yellow-400 {
+            background-color: #facc15;
+        }
+
+        .text-gray-900 {
+            color: #111827;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .h-6 {
+            height: 1.5rem;
+        }
+
+        .w-6 {
+            width: 1.5rem;
+        }
+
+        .bg-blue-100 {
+            background-color: #dbeafe;
+        }
+
+        .text-blue-800 {
+            color: #1e40af;
+        }
+
+        .bg-green-100 {
+            background-color: #dcfce7;
+        }
+
+        .text-green-800 {
+            color: #166534;
+        }
+
+        .bg-purple-100 {
+            background-color: #f3e8ff;
+        }
+
+        .text-purple-800 {
+            color: #6b21a8;
+        }
+
+        .bg-orange-100 {
+            background-color: #ffedd5;
+        }
+
+        .text-orange-800 {
+            color: #9a3412;
+        }
+
+        .bg-red-100 {
+            background-color: #fee2e2;
+        }
+
+        .text-red-800 {
+            color: #b91c1c;
+        }
+
+        .bg-gray-800 {
+            background-color: #1f2937;
+        }
+
+        .text-gray-300 {
+            color: #d1d5db;
+        }
+
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .hover\:text-white:hover {
+            color: #ffffff;
+        }
+
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .ring-4 {
+            box-shadow: 0 0 0 4px;
+        }
+
+        .ring-yellow-400 {
+            --tw-ring-color: #facc15;
+        }
+
+        .ring-opacity-70 {
+            --tw-ring-opacity: 0.7;
+        }
+
+        .block {
+            display: block;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .pl-10 {
+            padding-left: 2.5rem;
+        }
+
+        .pr-4 {
+            padding-right: 1rem;
+        }
+
+        .text-black-700 {
+            color: #374151;
+        }
+
+        .bg-whitesmoke-900 {
+            background-color: #f5f5f4;
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        .inline-flex {
+            display: inline-flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .text-green-600 {
+            color: #16a34a;
+        }
+
+        .text-red-600 {
+            color: #dc2626;
+        }
+
+        .bg-gradient-to-r {
+            background-image: linear-gradient(to right, var(--tw-gradient-stops));
+        }
+
+        .from-blue-600 {
+            --tw-gradient-from: #2563eb;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(37, 99, 235, 0));
+        }
+
+        .to-purple-600 {
+            --tw-gradient-to: #9333ea;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        .divide-y>*+* {
+            border-top-width: 1px;
+        }
+
+        .divide-gray-200>*+* {
+            border-color: #e5e7eb;
+        }
+
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <img src="https://lh3.googleusercontent.com/d/1U1MIBkYf6U8Rjbi3-gpSNgyV9FvXleL_" alt="icon"
+                        width="50">
+                    <h1 class="text-xl md:text-2xl font-bold">Kelas XI RPL B</h1>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#home" class="hover:text-blue-200 transition">Beranda</a>
+                    <a href="#struktur" class="hover:text-blue-200 transition">Struktur</a>
+                    <a href="#murid" class="hover:text-blue-200 transition">Daftar Murid</a>
+                    <a href="#piket" class="hover:text-blue-200 transition">Jadwal Piket</a>
+                    <a href="#pelajaran" class="hover:text-blue-200 transition">Jadwal Pelajaran</a>
+                    <a href="#gallery" class="hover:text-blue-200 transition">Gallery</a>
+                </div>
+                <button id="mobileMenuBtn" class="md:hidden">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-blue-700">
+            <div class="px-4 py-2 space-y-2">
+                <a href="#home" class="block py-2 hover:text-blue-200">Beranda</a>
+                <a href="#struktur" class="block py-2 hover:text-blue-200">Struktur</a>
+                <a href="#murid" class="block py-2 hover:text-blue-200">Daftar Murid</a>
+                <a href="#piket" class="block py-2 hover:text-blue-200">Jadwal Piket</a>
+                <a href="#pelajaran" class="block py-2 hover:text-blue-200">Jadwal Pelajaran</a>
+                <a href="#gallery" class="block py-2 hover:text-blue-200">Gallery</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-gradient-to-br from-blue-600 to-purple-700 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-6xl font-bold mb-4 animated">Selamat Datang di Kelas XI RPL B</h2>
+            <p class="text-xl md:text-2xl mb-8 animated" style="animation-delay: 0.2s">KREATIVITAS TANPA BATAS</p>
+            <div class="flex justify-center space-x-4 animated" style="animation-delay: 0.4s">
+                <a href="#struktur"
+                    class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-50 transition">
+                    <i class="fas fa-users mr-2"></i>Lihat Struktur
+                </a>
+                <a href="#gallery"
+                    class="border-2 border-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-blue-600 transition">
+                    <i class="fas fa-images mr-2"></i>Lihat Gallery
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Struktur Organisasi -->
+    <section id="struktur" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+
+            <!-- Wali Kelas Section -->
+            <div class="mb-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-4xl font-bold text-gray-700">
+                        <i class="fas fa-chalkboard-teacher text-purple-600 mr-2"></i>Wali Kelas
+                    </h1>
+                </div>
+                <div class="flex justify-center">
+                    <div class="wali-kelas-card max-w-md w-full clickable-card" onclick="openProfileModal('https://lh3.googleusercontent.com/d/190pR874p0UBi4qk7q7BTULRYSndelUo1', 'Bu Sani', 'Wali Kelas XI RPL B')">
+                        <div class="wali-kelas-photo">
+                            <img src="https://lh3.googleusercontent.com/d/190pR874p0UBi4qk7q7BTULRYSndelUo1"
+                                alt="Wali Kelas" class="photo-zoom">
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Bu Sani</h3>
+                        <p class="text-purple-200">Wali Kelas XI RPL B</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">
+                    <i class="fas fa-sitemap text-blue-600 mr-3"></i>Struktur Organisasi Kelas
+                </h2>
+            </div>
+
+            <div id="strukturContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Daftar Murid Section -->
+    <section id="murid" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">
+                    <i class="fas fa-user-graduate mr-2 text-blue-600 mr-3"></i>Daftar Murid
+                </h2>
+            </div>
+
+            <div class="mb-6 max-w-md mx-auto">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Cari berdasarkan nomor absen..."
+                        class="w-full px-4 py-2 pl-10 pr-4 text-black-700 bg-whitesmoke-900 border rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+                <div id="searchResult" class="mt-2 text-sm"></div>
+            </div>
+
+            <div id="muridContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Jadwal Piket -->
+    <section id="piket" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">
+                    <i class="fas fa-calendar-check text-blue-600 mr-3"></i>Jadwal Piket Kelas
+                </h2>
+            </div>
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-blue-600 text-white">
+                            <tr>
+                                <th class="px-6 py-4 text-left">Hari</th>
+                                <th class="px-6 py-4 text-left">Nama Siswa</th>
+                                <th class="px-6 py-4 text-left">Tugas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="piketTableBody" class="divide-y divide-gray-200">
+                            <!-- Rows will be dynamically generated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jadwal Pelajaran -->
+    <section id="pelajaran" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">
+                    <i class="fas fa-clock text-blue-600 mr-3"></i>Jadwal Pelajaran
+                </h2>
+            </div>
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                                <tr>
+                                    <th class="px-4 py-3 text-center">Jam</th>
+                                    <th class="px-4 py-3 text-center">Senin</th>
+                                    <th class="px-4 py-3 text-center">Selasa</th>
+                                    <th class="px-4 py-3 text-center">Rabu</th>
+                                    <th class="px-4 py-3 text-center">Kamis</th>
+                                    <th class="px-4 py-3 text-center">Jam</th>
+                                    <th class="px-4 py-3 text-center">Jumat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pelajaranTableBody" class="divide-y divide-gray-200">
+                                <!-- Rows will be dynamically generated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">
+                    <i class="fas fa-images text-blue-600 mr-3"></i>Gallery Kenangan
+                </h2>
+            </div>
+            <div id="galleryContainer"
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+                <!-- Gallery items will be dynamically generated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">Kelas XI RPL B</h3>
+                <p class="text-gray-300 mb-4">"KREATIVITAS TANPA BATAS"</p>
+                <div class="flex justify-center space-x-6 mb-4">
+
+                    <a href="https://www.instagram.com/xirplbe_?igsh=d2M5amZ6YmthZjJw"
+                        class="text-gray-300 hover:text-white transition">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@erpeelbe_?_t=ZS-906imFOCMQk&_r=1"
+                        class="text-gray-300 hover:text-white transition">
+                        <i class="fa-brands fa-tiktok text-2xl"></i>
+                    </a>
+                    <a href="https://youtube.com/@xrplbe?si=FTFyuR6cnU_G6zPe"
+                        class="text-gray-300 hover:text-white transition">
+                        <i class="fab fa-youtube text-2xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-400 text-sm">© 2024-2027 Kelas XI RPL B. Barudak Bageur.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Gallery View Modal - MODIFIED -->
+    <div id="galleryViewModal" class="gallery-modal">
+        <span class="gallery-modal-close" onclick="closeGalleryViewModal()">&times;</span>
+        <div class="gallery-modal-content">
+            <img id="galleryViewImage" src="" alt="">
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="profile-modal">
+        <div class="profile-modal-content">
+            <span class="profile-modal-close" onclick="closeProfileModal()">&times;</span>
+            <img id="profileModalImage" src="" alt="">
+            <div class="profile-info">
+                <h3 id="profileModalName"></h3>
+                <p id="profileModalRole"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Data Wali Kelas
+        const waliKelasData = {
+            nama: 'Bu Sani',
+            foto: 'https://lh3.googleusercontent.com/d/1U1MIBkYf6U8Rjbi3-gpSNgyV9FvXleL_'
+        };
+
+        // Data Pengurus Kelas (dengan tambahan noAbsen)
+        const pengurusData = [
+            { id: 1, nama: 'PUTRA MUHAMAD HAMZAH', jabatan: 'Ketua Kelas', foto: 'https://lh3.googleusercontent.com/d/1iy-Xm0m87gNcu0b54BWFYah_VcOvV6mN', warna: 'red' },
+            { id: 2, nama: 'MUHAMAD EZHAR AZUWAN MIZAM', jabatan: 'Wakil Ketua', foto: 'https://lh3.googleusercontent.com/d/1aneIjl-BhEurZNteshwkZ6fhCvJdTf4W', warna: 'orange' },
+            { id: 3, nama: 'SYAFFA KAMILA NUR RAHMI', jabatan: 'Sekretaris1', foto: 'https://lh3.googleusercontent.com/d/18INs2ryhtRzQbTkBQPO-lwBmJQsPIJ4z', warna: 'pink' },
+            { id: 4, nama: 'YULFANI NURUL ILHAM', jabatan: 'Sekretaris2', foto: 'https://lh3.googleusercontent.com/d/16Qsy086C8MTtp3F-L9EPwq7ek9AT9sYf', warna: 'pink' },
+            { id: 5, nama: 'RENITA MEILA', jabatan: 'Bendahara1', foto: 'https://lh3.googleusercontent.com/d/1sr256M7nkR3GCMWjKgM_9xZysNwnuCH8', warna: 'green' },
+            { id: 6, nama: 'ZAHRA DWI RAMADHANI', jabatan: 'Bendahara2', foto: 'https://lh3.googleusercontent.com/d/1Oo6ZIDyj1HNwSuKwWH79vu47ADaJU4GZ', warna: 'green' },
+            { id: 7, nama: 'JUANDI RUSTIANA', jabatan: 'Seksi Kebersihan', foto: 'https://lh3.googleusercontent.com/d/1VS4HL1oJTEhD6EbENPIN9KYdbtsElEeK', warna: 'cyan' },
+            { id: 8, nama: 'MOCHAMAD IBRAHIM ALHASBY', jabatan: 'Seksi Rohani', foto: 'https://lh3.googleusercontent.com/d/1rIQ-k4YkXMwywk3EbGA1QaE_aKbigWWm', warna: 'gold' },
+            { id: 9, nama: 'FABIYAN ABDHI WIBOWO', jabatan: 'Seksi Rohani', foto: 'https://lh3.googleusercontent.com/d/1ufrb2USCMou7_HSIO7c0gJFurv_iDAyT', warna: 'gold' },
+        ];
+
+        // Data Murid
+        const muridData = [
+            { id: 7, nama: 'AFRIZA ABIYU HANIF', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1zAKjhQOr-f7UWDcQaWcowOXx9oPiTTKd', noAbsen: '01', instagram: 'https://www.instagram.com/afrza.0?igsh=NXpqM2pyaGFjMTh5' },
+            { id: 8, nama: 'ARYA RENALDI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1f-7p1DUb18ywMaAeoi5styOQW88isIqR', noAbsen: '02', instagram: 'https://www.instagram.com/arya.ndl?igsh=MWpoMDFqN25scnJ1eA==' },
+            { id: 9, nama: 'DINO HERLAMBANG', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1P3z3r_CUHTB76BHQhtl5Xk7T_EONpfHz', noAbsen: '03', instagram: 'https://www.instagram.com/dino_hrlmbng?igsh=MWo0cGEwaWF5Z2kxZA==' },
+            { id: 10, nama: 'FABIYAN ABDHI WIBOWO', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1ufrb2USCMou7_HSIO7c0gJFurv_iDAyT', noAbsen: '04', instagram: 'https://www.instagram.com/fab_yanzz?igsh=bDJld2RnM3l1djcz' },
+            { id: 11, nama: 'FARREL RIZKAR OBAMA SUTANYO', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1T3_PFfMlHYFDsFIkP-W_5vqbyKGvgbD5', noAbsen: '05', instagram: 'https://www.instagram.com/funrrel?igsh=OXZhMTVncmUwbXV3' },
+            { id: 12, nama: 'HAIDAR LUHUR WIJAYA', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1OHHikFb4nCKW_BbcUYSh-cWl0lk82AKE', noAbsen: '06', instagram: 'https://www.instagram.com/darys_gm?igsh=MXdiNzg0aHJvc205MQ==', github: 'https://github.com/darys-gm', youtube: 'https://youtube.com/@darysftgaming?si=_1QD_A6iNKig7WLJ' },
+            { id: 13, nama: 'JUANDI RUSTIANA', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1VS4HL1oJTEhD6EbENPIN9KYdbtsElEeK', noAbsen: '07', instagram: 'https://www.instagram.com/wannz_78?igsh=MWFoNXQ0aWlmZmRueg==' },
+            { id: 14, nama: 'MOCHAMAD IBRAHIM ALHASBY', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1rIQ-k4YkXMwywk3EbGA1QaE_aKbigWWm', noAbsen: '08', instagram: 'https://www.instagram.com/mhmdibrahim_12?igsh=MWlkYTF0cmhyNGFxaA==' },
+            { id: 15, nama: 'MUHAMAD EZHAR AZUWAN MIZAM', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1aneIjl-BhEurZNteshwkZ6fhCvJdTf4W', noAbsen: '09', instagram: 'https://instagram.com/eza_zann/' },
+            { id: 16, nama: 'MUHAMMAD ATTA FAWAZ', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1BV5KKiEFxE_jCVog5OZ9iIyPLulPtDr5', noAbsen: '10', instagram: 'https://www.instagram.com/aatt_fwz?igsh=MnZpdmY4aXhzOGp3' },
+            { id: 17, nama: 'MUHAMMAD DHAFA ABDUL GHANI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/19g4lGSjWaZ-ykj2vEDDKvdCdPypf-51z', noAbsen: '11', instagram: 'https://www.instagram.com/xodapaxo?igsh=NGVlbHNjNG03Mnkw' },
+            { id: 18, nama: 'MUHAMMAD GILAR', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1DjLOW6-W5Q8-DKbRvYwCbeI8WL4BmY8q', noAbsen: '12', instagram: 'https://www.instagram.com/gilar_project93?igsh=bzR3NXM2Ym82YmR3 ' },
+            { id: 19, nama: 'MUHAMMAD SULAEMAN AL JAZULI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1DEoExO9qOdZF-Zto5Wpqy8D3FGLzhv3E', noAbsen: '13', instagram: 'https://www.instagram.com/sula.eman852?igsh=MTRuZDQ3YXBjcG55bQ==' },
+            { id: 20, nama: 'NAZWA AUDRY MAHESWARI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/18BFMjJmGJ1YcWa6rj8ZnTzTthZPjOcy_', noAbsen: '14', instagram: 'https://www.instagram.com/nzwaadry._?igsh=Z21rZG9wZG1kMmJ5' },
+            { id: 21, nama: 'NURRAFI AHMAD KASYFAYAIL', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1ev1umRHO9kkArVIPFIpPXTArNu6mzPE9', noAbsen: '15', instagram: 'https://www.instagram.com/qasvyl?igsh=ankxcDd2eHkweGFx' },
+            { id: 22, nama: 'PUTRA MUHAMAD HAMZAH', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1iy-Xm0m87gNcu0b54BWFYah_VcOvV6mN', noAbsen: '16', instagram: 'https://www.instagram.com/hamzz.putra?igsh=MWFscHQ4NWtuYmJwcw==' },
+            { id: 23, nama: 'RAFI IRFANSYAH', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1137CZ3VqR0W1i47KyKnUGZAfhmHaOEuG', noAbsen: '17', instagram: 'https://www.instagram.com/ap1ww25?igsh=MWlpbm8wNGF3Z21xMg==' },
+            { id: 24, nama: 'RAZAN FACHRI RAMADHAN', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1hZ9aeI-K-dAb1OIC6s8RUiJRv6NZgJYZ', noAbsen: '18', instagram: 'https://www.instagram.com/rajanfachri?igsh=MW11em16NzR0ZHQ4bg==' },
+            { id: 25, nama: 'RENITA MEILA', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1sr256M7nkR3GCMWjKgM_9xZysNwnuCH8', noAbsen: '19', instagram: 'https://www.instagram.com/renitameila?igsh=bXI3M3lnaHU1bTRz&utm_source=qr' },
+            { id: 26, nama: 'RICKY RAMADHAN', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1Y2WkEhDUtBHmRH-jozQ5odn_PRy-tRBC', noAbsen: '20', instagram: 'https://www.instagram.com/0909_kiii?igsh=MTBmMHp2b2hrd3pubw==' },
+            { id: 27, nama: 'RIDHO ABDUL HAFIZ', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1oflor-ToqIK3H-kIAdnYhSfP4-cvaz8I', noAbsen: '21', instagram: 'https://www.instagram.com/theridzone?igsh=OWRpbXFlY3Nrb3Jm' },
+            { id: 28, nama: 'RIFQI MUHAMMAD FAIZ', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1Aw9WSLQuVwc4gi_wURTzqg9Kol_o7KGr', noAbsen: '22', instagram: 'https://www.instagram.com/ikyysudahmandi_?igsh=MTZuM2d6cTFic2l4NA==' },
+            { id: 29, nama: 'SHARA AGUSTINA', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1ZDAUWh33yVDeyVboSEm7o75kuxV23VCD', noAbsen: '23', instagram: 'https://www.instagram.com/raaa.sharr?igsh=cW9mdWZwZ3gzcWhu' },
+            { id: 30, nama: 'SITI SARAH NURANIAH', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1Hf4MmmtfcP14_ylWh51ehdL1B_1NozFh', noAbsen: '24', instagram: 'https://www.instagram.com/sarrsrh_?igsh=MWZ6eGFqdTI4YWtmYw==' },
+            { id: 31, nama: 'SUCI ANDRIYANI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1LURwrGLLRxs_hkn4oFlvjxdaL3P-niiM', noAbsen: '25', instagram: 'https://www.instagram.com/ciiiwoo?igsh=eGVsemo0cjAyOW51' },
+            { id: 32, nama: 'SYAFFA KAMILA NUR RAHMI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/18INs2ryhtRzQbTkBQPO-lwBmJQsPIJ4z', noAbsen: '26', instagram: 'https://www.instagram.com/sasyaffa?igsh=bHVnY2FoaG8zeTVn' },
+            { id: 33, nama: 'WAFI NAUFAL HAFIDZ', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/16nWB_o9oBqIW3Q9b2Sx5A5UiCTNWx3X3', noAbsen: '27', instagram: 'https://www.instagram.com/wafieecihuyy?igsh=MWw1eHkzNGxmaTZpdA==' },
+            { id: 34, nama: 'YULFANI NURUL ILHAM', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/16Qsy086C8MTtp3F-L9EPwq7ek9AT9sYf', noAbsen: '28', instagram: 'https://www.instagram.com/http.wwse?igsh=eGNuOHEyam12Nmhj' },
+            { id: 35, nama: 'ZAHRA DWI RAMADHANI', jabatan: 'Murid', foto: 'https://lh3.googleusercontent.com/d/1Oo6ZIDyj1HNwSuKwWH79vu47ADaJU4GZ', noAbsen: '29', instagram: 'https://www.instagram.com/zhraadwi_r?igsh=Y2ZmYWUza2hka2Fw' },
+        ];
+
+        // Data Jadwal Piket
+        const piketData = [
+            { id: 1, hari: 'Senin', nama: 'Fabiyan, M.Ibrahim, M.Dhafa, Nazwa, Renita, Ridho', tugas: 'Membersihkan kelas' },
+            { id: 2, hari: 'Selasa', nama: 'Afriza, Farrel, M.Atta, Nurrafi, Putra, Suci', tugas: 'Membersihkan kelas' },
+            { id: 3, hari: 'Rabu', nama: 'Dino, Juandi, Rafi, Ricky, Siti sarah, Wafi', tugas: 'Membersihkan kelas' },
+            { id: 4, hari: 'Kamis', nama: 'Arya, Haidar, M.Sulaeman, Shara, Syaffa', tugas: 'Membersihkan kelas' },
+            { id: 5, hari: 'Jumat', nama: 'M.Ezhar, M.Gilar, Razan, Rifki, Yulfani, Zahra', tugas: 'Membersihkan kelas' }
+        ];
+
+        // Data Jadwal Pelajaran
+        const pelajaranData = [
+            { id: 1, jam: '06:30 - 07:15', senin: 'Upacara', selasa: 'Android', rabu: 'Database', kamis: 'Agama', jam1: '06:30 - 07:00', jumat: 'PKN' },
+            { id: 2, jam: '07:15 - 08:00', senin: 'Upacara', selasa: 'Android', rabu: 'Database', kamis: 'Agama', jam1: '07:00 - 07:45', jumat: 'PKN' },
+            { id: 3, jam: '08:00 - 08:45', senin: 'KWU', selasa: 'Android', rabu: 'Database', kamis: 'Agama', jam1: '07:45 - 08:30', jumat: 'PKN' },
+            { id: 4, jam: '08:45 - 09:30', senin: 'KWU', selasa: 'Android', rabu: 'Database', kamis: 'Bahasa Indonesia', jam1: '08:30 - 09:15', jumat: 'Sejarah' },
+            { id: 5, jam: '09:30 - 09:45', senin: 'ISTIRAHAT', selasa: 'ISTIRAHAT', rabu: 'ISTIRAHAT', kamis: 'ISTIRAHAT', jam1: '09:15 - 10:00', jumat: 'Sejarah' },
+            { id: 6, jam: '09:45 - 10:30', senin: 'Penjas', selasa: 'Dekstop', rabu: 'BK', kamis: 'Bahasa Indonesia', jam1: '10:00 - 10:45', jumat: 'Bahasa Inggris' },
+            { id: 7, jam: '10:30 - 11:15', senin: 'Penjas', selasa: 'Dekstop', rabu: 'PKK', kamis: 'Bahasa Indonesia', jam1: '10:45 - 11:30', jumat: 'Bahasa Inggris' },
+            { id: 8, jam: '11:15 - 12:00', senin: 'Matematika', selasa: 'Dekstop', rabu: 'PKK', jam1: '11:30 - 13:00', jumat: 'ISTIRAHAT' },
+            { id: 9, jam: '12:00 - 12:45', senin: 'ISTIRAHAT', selasa: 'ISTIRAHAT', rabu: 'ISTIRAHAT', jam1: '13:00 - 13:35', jumat: 'Bahasa Inggris' },
+            { id: 10, jam: '12:45 - 13:20', senin: 'Matematika', selasa: 'Dekstop', rabu: 'PKK', jam1: '13:35 - 14:10', jumat: 'Bahasa Inggris' },
+            { id: 11, jam: '13:20 - 13:55', senin: 'Matematika', selasa: 'PPL', rabu: 'Website', jam1: '14:10 - 14:45' },
+            { id: 12, jam: '13:55 - 14:30', senin: 'Website', selasa: 'PPL', rabu: 'Website', jam1: '14:45 - 15:20' },
+            { id: 13, jam: '14:30 - 15:05', senin: 'Website', selasa: 'PPL', rabu: 'Website', jam1: '15:20 - 15:55' },
+            { id: 14, jam: '15:05 - 15:40', senin: 'Website', selasa: 'PPL', jam1: '15:55 - 16:30' },
+
+        ];
+
+        // Data Gallery
+        const galleryData = [
+            { id: 1, judul: 'SWEET MOMENT', deskripsi: 'Kelas XI RPL B', foto: 'https://lh3.googleusercontent.com/d/14kmC3XT8wtm3tFdhJCVlDdSZ5uvUywTD' },
+            { id: 2, judul: 'SWEET MOMENT', deskripsi: 'Juara 1 Lomba 17 Agustus', foto: 'https://lh3.googleusercontent.com/d/1L9dbwgXNOxzEAnZBdU0noqWmSoIYtZuO' },
+            { id: 3, judul: 'SWEET MOMENT', deskripsi: '17 Agustusan', foto: 'https://lh3.googleusercontent.com/d/1v5s5pPRacNFp0LP0zZ5QLQVCnz5rUZnI' },
+            { id: 4, judul: 'SWEET MOMENT', deskripsi: 'Upacara Bendera', foto: 'https://lh3.googleusercontent.com/d/1CTTLF5MC6iXCWTGSwONZeTTAR0c89eJ3' },
+            { id: 5, judul: 'SWEET MOMENT', deskripsi: 'Buka Puasa Bersama', foto: 'https://lh3.googleusercontent.com/d/1BoGcnP-0YU6trFo_Kdxag2SInc2eFdA4' },
+            { id: 6, judul: 'SWEET MOMENT', deskripsi: 'Hari Batik Nasional', foto: 'https://lh3.googleusercontent.com/d/1wPHI4nwpQbppkzW1dJsGequlNeV6new9' },
+            { id: 7, judul: 'SWEET MOMENT', deskripsi: 'Gelar Karya P5', foto: 'https://lh3.googleusercontent.com/d/1jiUtK_8bO5ivUaT1N98eXMnW1wwVIPGD' },
+            { id: 8, judul: 'SWEET MOMENT', deskripsi: 'Gelar Karya P5', foto: 'https://lh3.googleusercontent.com/d/15MTs6EvjXQsNM4l3h5fJHHM5zLTO1Gt6' },
+            { id: 8, judul: 'SWEET MOMENT', deskripsi: 'Juara 1 Pentas Seni Gelar Karya P5', foto: 'https://lh3.googleusercontent.com/d/1cg2FBssnFtjWktyhgevdHztkg3lQxqpx' },
+            { id: 8, judul: 'SWEET MOMENT', deskripsi: 'Maulid Nabi', foto: 'https://lh3.googleusercontent.com/d/1y5P06iaJTX6xlcEJpX4s0wXX3MVSi7_h' }
+        ];
+
+        // ==============================
+        // JANGAN UBAH KODE DI BAWAH INI
+        // ==============================
+
+        // Color gradients for cards
+        const colorGradients = {
+            blue: 'from-blue-500 to-blue-600',
+            purple: 'from-purple-500 to-purple-600',
+            green: 'from-green-500 to-green-600',
+            orange: 'from-orange-500 to-orange-600',
+            teal: 'from-teal-500 to-teal-600',
+            red: 'from-red-500 to-red-600',
+            pink: 'from-pink-500 to-pink-600',
+            indigo: 'from-indigo-500 to-indigo-600',
+            cyan: 'from-cyan-500 to-cyan-600',
+            gold: 'from-yellow-300 to-yellow-600'
+        };
+
+        const colorTexts = {
+            blue: 'text-blue-100',
+            purple: 'text-purple-100',
+            green: 'text-green-100',
+            orange: 'text-orange-100',
+            teal: 'text-teal-100',
+            red: 'text-red-100',
+            pink: 'text-pink-100',
+            indigo: 'text-indigo-100',
+            cyan: 'text-cyan-100',
+            gold: 'text-yellow-100'
+        };
+
+        // Icons for positions
+        const positionIcons = {
+            'Ketua Kelas': ['fas fa-crown', 'fas fa-star'],
+            'Wakil Ketua': ['fas fa-medal', 'fas fa-star'],
+            'Sekretaris1': ['fas fa-pen', 'fas fa-book'],
+            'Sekretaris2': ['fas fa-pen', 'fas fa-book'],
+            'Bendahara1': ['fas fa-money-bill', 'fas fa-calculator'],
+            'Bendahara2': ['fas fa-money-bill', 'fas fa-calculator'],
+            'Seksi Kebersihan': ['fas fa-broom', 'fas fa-soap'],
+            'Seksi Rohani': ['fas fa-pray', 'fas fa-dove'],
+            'Murid': ['fas fa-user', 'fas fa-graduation-cap']
+        };
+
+        // Task icons
+        const taskIcons = {
+            'Membersihkan kelas': 'fas fa-broom',
+        };
+
+        // Subject colors
+        const subjectColors = {
+            'Matematika': 'blue',
+            'Dekstop': 'green',
+            'BK': 'purple',
+            'PKK': 'orange',
+            'PPL': 'orange',
+            'Bahasa Indonesia': 'amber',
+            'Bahasa Inggris': 'teal',
+            'Sejarah': 'indigo',
+            'Database': 'pink',
+            'Penjas': 'yellow',
+            'Website': 'cyan',
+            'KWU': 'lime',
+            'Upacara': 'red',
+            'Agama': 'violet',
+            'PKN': 'gray',
+            'Android': 'blue',
+            'ISTIRAHAT': 'red',
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            renderWaliKelas();
+            renderPengurus();
+            renderMurid();
+            renderPiket();
+            renderPelajaran();
+            renderGallery();
+
+            // Tambahkan event listener untuk pencarian
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchByNoAbsen);
+            }
+        });
+
+        // Render Wali Kelas
+        function renderWaliKelas() {
+            const photo = document.getElementById('waliKelasPhoto');
+            const nama = document.getElementById('waliKelasNama');
+
+            if (photo && nama) {
+                photo.src = waliKelasData.foto;
+                nama.textContent = waliKelasData.nama;
+            }
+        }
+
+        // Render Pengurus (Struktur Organisasi)
+        function renderPengurus() {
+            const container = document.getElementById('strukturContainer');
+            if (!container) {
+                console.error('strukturContainer not found');
+                return;
+            }
+
+            container.innerHTML = '';
+
+            pengurusData.forEach(pengurus => {
+                const card = createPengurusCard(pengurus);
+                if (card) {
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        // Render Murid
+        function renderMurid() {
+            const container = document.getElementById('muridContainer');
+            if (!container) {
+                console.error('muridContainer not found');
+                return;
+            }
+
+            container.innerHTML = '';
+
+            muridData.forEach(murid => {
+                const card = createMuridCard(murid);
+                if (card) {
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        // Fungsi untuk melakukan pencarian
+        function searchByNoAbsen() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResult = document.getElementById('searchResult');
+            const searchTerm = searchInput.value.trim();
+
+            if (searchTerm === '') {
+                // Tampilkan semua murid jika input kosong
+                renderMurid();
+                searchResult.textContent = '';
+                return;
+            }
+
+            // Filter murid berdasarkan nomor absen
+            const filteredData = muridData.filter(murid =>
+                murid.noAbsen.includes(searchTerm)
+            );
+
+            // Tampilkan hasil pencarian
+            if (filteredData.length > 0) {
+                renderFilteredMurid(filteredData);
+                searchResult.textContent = `Ditemukan ${filteredData.length} murid dengan nomor absen "${searchTerm}"`;
+                searchResult.className = 'mt-2 text-sm text-green-600';
+            } else {
+                // Tampilkan pesan tidak ditemukan
+                document.getElementById('muridContainer').innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-user-slash text-4xl text-gray-400 mb-3"></i>
+                        <p class="text-gray-500">Tidak ada murid dengan nomor absen "${searchTerm}"</p>
+                    </div>
+                `;
+                searchResult.textContent = `Tidak ditemukan murid dengan nomor absen "${searchTerm}"`;
+                searchResult.className = 'mt-2 text-sm text-red-600';
+            }
+        }
+
+        // Fungsi untuk menampilkan hasil filter
+        function renderFilteredMurid(data) {
+            const container = document.getElementById('muridContainer');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            data.forEach(murid => {
+                const card = createMuridCard(murid);
+                if (card) {
+                    // Tambahkan efek highlight pada kartu hasil pencarian
+                    card.classList.add('ring-4', 'ring-yellow-400', 'ring-opacity-70');
+                    container.appendChild(card);
+                }
+            });
+
+            // Scroll ke hasil pencarian
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function createPengurusCard(pengurus) {
+            try {
+                const div = document.createElement('div');
+                div.className = `bg-gradient-to-br ${colorGradients[pengurus.warna]} rounded-lg p-4 text-white transform hover:scale-105 transition shadow-lg clickable-card`;
+
+                // Tambahkan event listener untuk membuka modal
+                div.addEventListener('click', function () {
+                    openProfileModal(pengurus.foto, pengurus.nama, pengurus.jabatan);
+                });
+
+                const icons = positionIcons[pengurus.jabatan] || positionIcons['Lainnya'];
+
+                div.innerHTML = `
+                    <div class="text-center">
+                        <img src="${pengurus.foto}" alt="${pengurus.nama}" class="w-20 h-20 rounded-full mx-auto mb-2 border-3 border-white shadow-md object-cover photo-zoom">
+                        <h3 class="text-sm font-bold mb-1">${pengurus.nama}</h3>
+                        <p class="text-xs ${colorTexts[pengurus.warna]}">${pengurus.jabatan}</p>
+                        <div class="mt-2 flex justify-center space-x-1">
+                            <i class="${icons[0]} text-yellow-300 text-xs"></i>
+                            <i class="${icons[1]} text-yellow-300 text-xs"></i>
+                        </div>
+                    </div>
+                `;
+
+                return div;
+            } catch (error) {
+                console.error('Error creating pengurus card:', error);
+                return null;
+            }
+        }
+
+        function createMuridCard(murid) {
+            try {
+                const div = document.createElement('div');
+
+                // Cek apakah ini kartu khusus untuk Haidar
+                if (murid.nama === "HAIDAR LUHUR WIJAYA") {
+                    div.className = `bg-gradient-to-br ${colorGradients.blue} rounded-lg p-4 text-white transform hover:scale-105 transition shadow-lg clickable-card special-card`;
+
+                    // Data alternatif untuk Haidar
+                    const altData = {
+                        nama: "DARYS GM",
+                        foto: "https://lh3.googleusercontent.com/d/1EdVN0PbHSrV_bsWUSi0kB9pg8cS5StRP",
+                        jabatan: "Content Creator"
+                    };
+
+                    // Struktur khusus untuk kartu Haidar
+                    div.innerHTML = `
+                        <div class="card-content">
+                            <div class="text-center">
+                                <div class="relative">
+                                    <img src="${murid.foto}" alt="${murid.nama}" class="w-20 h-20 rounded-full mx-auto mb-2 border-3 border-white shadow-md object-cover photo-zoom">
+                                    <span class="absolute -top-1 -right-1 bg-yellow-400 text-gray-900 text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">${murid.noAbsen}</span>
+                                </div>
+                                <h3 class="text-sm font-bold mb-1">${murid.nama}</h3>
+                                <p class="text-xs ${colorTexts.blue}">${murid.jabatan}</p>
+                                <div class="mt-2 flex justify-center space-x-1">
+                                    <i class="${positionIcons[murid.jabatan][0]} text-yellow-300 text-xs"></i>
+                                    <i class="${positionIcons[murid.jabatan][1]} text-yellow-300 text-xs"></i>
+                                </div>
+                                <div class="flex justify-center mt-2">
+                                    ${createSocialButtons(murid)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alt-content">
+                            <div class="alt-photo">
+                                <img src="${altData.foto}" alt="${altData.nama}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="alt-name">${altData.nama}</div>
+                            <div class="alt-role">${altData.jabatan}</div>
+                            <div class="gamer-icon">
+                                <i class="fas fa-gamepad"></i>
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <div class="alt-social">
+                                ${createSocialButtons(murid)}
+                            </div>
+                        </div>
+                    `;
+
+                    // Tambahkan event listener khusus untuk Haidar
+                    addSpecialCardEvents(div, murid, altData);
+                } else {
+                    // Kartu murid biasa
+                    div.className = `bg-gradient-to-br ${colorGradients.blue} rounded-lg p-4 text-white transform hover:scale-105 transition shadow-lg clickable-card`;
+
+                    // Tambahkan event listener untuk membuka modal
+                    div.addEventListener('click', function () {
+                        openProfileModal(murid.foto, murid.nama, murid.jabatan);
+                    });
+
+                    const icons = positionIcons[murid.jabatan] || positionIcons['Murid'];
+
+                    div.innerHTML = `
+                        <div class="text-center">
+                            <div class="relative">
+                                <img src="${murid.foto}" alt="${murid.nama}" class="w-20 h-20 rounded-full mx-auto mb-2 border-3 border-white shadow-md object-cover photo-zoom">
+                                <span class="absolute -top-1 -right-1 bg-yellow-400 text-gray-900 text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">${murid.noAbsen}</span>
+                            </div>
+                            <h3 class="text-sm font-bold mb-1">${murid.nama}</h3>
+                            <p class="text-xs ${colorTexts.blue}">${murid.jabatan}</p>
+                            <div class="mt-2 flex justify-center space-x-1">
+                                <i class="${icons[0]} text-yellow-300 text-xs"></i>
+                                <i class="${icons[1]} text-yellow-300 text-xs"></i>
+                            </div>
+                            <div class="flex justify-center mt-2">
+                                ${createSocialButtons(murid)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return div;
+            } catch (error) {
+                console.error('Error creating murid card:', error);
+                return null;
+            }
+        }
+
+        // Fungsi untuk membuat social buttons
+        function createSocialButtons(murid) {
+            let socialButtonsHtml = '';
+
+            // Instagram button (all students have this)
+            if (murid.instagram) {
+                socialButtonsHtml += `<a href="${murid.instagram}" target="_blank" class="social-btn instagram-btn" onclick="event.stopPropagation()" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>`;
+            }
+
+            // GitHub button (only for Haidar Luhur Wijaya)
+            if (murid.github) {
+                socialButtonsHtml += `<a href="${murid.github}" target="_blank" class="social-btn github-btn" onclick="event.stopPropagation()" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>`;
+            }
+
+            // YouTube button (only for Haidar Luhur Wijaya)
+            if (murid.youtube) {
+                socialButtonsHtml += `<a href="${murid.youtube}" target="_blank" class="social-btn youtube-btn" onclick="event.stopPropagation()" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>`;
+            }
+
+            return socialButtonsHtml;
+        }
+
+        // Fungsi untuk menambahkan event khusus pada kartu Haidar
+        function addSpecialCardEvents(card, originalData, altData) {
+            const cardContent = card.querySelector('.card-content');
+            const altContent = card.querySelector('.alt-content');
+            let isAltMode = false;
+
+            // Event hover
+            card.addEventListener('mouseenter', function () {
+                if (!isAltMode) {
+                    // Scroll down original content
+                    cardContent.classList.add('scroll-up');
+                    cardContent.classList.remove('scroll-down');
+
+                    // Scroll down alt content
+                    altContent.classList.add('scroll-down');
+                    altContent.classList.remove('scroll-up');
+                }
+            });
+
+            card.addEventListener('mouseleave', function () {
+                if (!isAltMode) {
+                    // Scroll up original content
+                    cardContent.classList.remove('scroll-up');
+                    cardContent.classList.add('scroll-down');
+
+                    // Scroll up alt content
+                    altContent.classList.remove('scroll-down');
+                    altContent.classList.add('scroll-up');
+                }
+            });
+
+            // Event click
+            card.addEventListener('click', function (e) {
+                e.stopPropagation();
+
+                if (!isAltMode) {
+                    // Switch to alt mode
+                    isAltMode = true;
+
+                    // Scroll down original content
+                    cardContent.classList.add('scroll-up');
+                    cardContent.classList.remove('scroll-down');
+
+                    // Scroll down alt content
+                    altContent.classList.add('scroll-down');
+                    altContent.classList.remove('scroll-up');
+
+                    // Open modal with alt data
+                    openProfileModal(altData.foto, altData.nama, altData.jabatan);
+                } else {
+                    // Switch back to original mode
+                    isAltMode = false;
+
+                    // Scroll up original content
+                    cardContent.classList.remove('scroll-up');
+                    cardContent.classList.add('scroll-down');
+
+                    // Scroll up alt content
+                    altContent.classList.remove('scroll-down');
+                    altContent.classList.add('scroll-up');
+
+                    // Open modal with original data
+                    openProfileModal(originalData.foto, originalData.nama, originalData.jabatan);
+                }
+            });
+        }
+
+        // Render Piket
+        function renderPiket() {
+            const tbody = document.getElementById('piketTableBody');
+            if (!tbody) {
+                console.error('piketTableBody not found');
+                return;
+            }
+
+            tbody.innerHTML = '';
+
+            piketData.forEach(piket => {
+                const row = createPiketRow(piket);
+                if (row) {
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        function createPiketRow(piket) {
+            try {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+
+                const icon = taskIcons[piket.tugas] || 'fas fa-tasks';
+                const colorClass = piket.tugas === 'Membersihkan kelas' ? 'blue' :
+                    piket.tugas === 'Merapikan taman' ? 'green' :
+                        piket.tugas === 'Membuang sampah' ? 'purple' :
+                            piket.tugas === 'Merapikan kursi' ? 'orange' : 'red';
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-semibold text-blue-600">${piket.hari}</td>
+                    <td class="px-6 py-4">
+                        <span>${piket.nama}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${colorClass}-100 text-${colorClass}-800">
+                            <i class="${icon} mr-1"></i> ${piket.tugas}
+                        </span>
+                    </td>
+                `;
+
+                return tr;
+            } catch (error) {
+                console.error('Error creating piket row:', error);
+                return null;
+            }
+        }
+
+        // Render Pelajaran
+        function renderPelajaran() {
+            const tbody = document.getElementById('pelajaranTableBody');
+            if (!tbody) {
+                console.error('pelajaranTableBody not found');
+                return;
+            }
+
+            tbody.innerHTML = '';
+
+            pelajaranData.forEach(pelajaran => {
+                const row = createPelajaranRow(pelajaran);
+                if (row) {
+                    tbody.appendChild(row);
+                }
+
+                // Add istirahat row if needed
+                if (pelajaran.jam === '08:30 - 09:00') {
+                    const istirahatRow = document.createElement('tr');
+                    istirahatRow.className = 'bg-gray-50';
+                    istirahatRow.innerHTML = `<td colspan="6" class="px-4 py-2 text-center text-sm text-gray-600 font-semibold">ISTIRAHAT</td>`;
+                    tbody.appendChild(istirahatRow);
+                }
+            });
+        }
+
+        function createPelajaranRow(pelajaran) {
+            try {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+
+                const cells = [
+                    `<td class="px-4 py-3 font-semibold text-gray-700">${pelajaran.jam}</td>`,
+                    `<td class="px-4 py-3">${createSubjectCell(pelajaran.senin)}</td>`,
+                    `<td class="px-4 py-3">${createSubjectCell(pelajaran.selasa)}</td>`,
+                    `<td class="px-4 py-3">${createSubjectCell(pelajaran.rabu)}</td>`,
+                    `<td class="px-4 py-3">${createSubjectCell(pelajaran.kamis)}</td>`,
+                    `<td class="px-4 py-3 font-semibold text-gray-700">${pelajaran.jam1}</td>`,
+                    `<td class="px-4 py-3">${createSubjectCell(pelajaran.jumat)}</td>`
+                ];
+
+                tr.innerHTML = cells.join('');
+
+                return tr;
+            } catch (error) {
+                console.error('Error creating pelajaran row:', error);
+                return null;
+            }
+        }
+
+        function createSubjectCell(subject) {
+            if (!subject) return '';
+
+            const color = subjectColors[subject] || 'gray';
+            return `
+                <div class="text-center">
+                    <span class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-${color}-100 text-${color}-800">${subject}</span>
+                </div>
+            `;
+        }
+
+        // Render Gallery - MODIFIED
+        function renderGallery() {
+            const container = document.getElementById('galleryContainer');
+            if (!container) {
+                console.error('galleryContainer not found');
+                return;
+            }
+
+            container.innerHTML = '';
+
+            galleryData.forEach(item => {
+                const galleryItem = createGalleryItem(item);
+                if (galleryItem) {
+                    container.appendChild(galleryItem);
+                }
+            });
+        }
+
+        function createGalleryItem(item) {
+            try {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+
+                // Tambahkan event listener untuk membuka modal galeri
+                div.addEventListener('click', function () {
+                    openGalleryView(item.foto);
+                });
+
+                div.innerHTML = `
+                    <img src="${item.foto}" alt="${item.judul}">
+                    <div class="gallery-overlay">
+                        <h3>${item.judul}</h3>
+                        <p>${item.deskripsi}</p>
+                    </div>
+                `;
+
+                return div;
+            } catch (error) {
+                console.error('Error creating gallery item:', error);
+                return null;
+            }
+        }
+
+        // Gallery View Functions - MODIFIED
+        function openGalleryView(imageSrc) {
+            try {
+                const modal = document.getElementById('galleryViewModal');
+                const modalImg = document.getElementById('galleryViewImage');
+
+                if (modal && modalImg) {
+                    modal.classList.add('active');
+                    modalImg.src = imageSrc;
+
+                    // Prevent scrolling on the background when modal is open
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch (error) {
+                console.error('Error in openGalleryView:', error);
+            }
+        }
+
+        function closeGalleryViewModal() {
+            try {
+                const modal = document.getElementById('galleryViewModal');
+
+                if (modal) {
+                    modal.classList.remove('active');
+
+                    // Restore scrolling on the background when modal is closed
+                    document.body.style.overflow = 'auto';
+                }
+            } catch (error) {
+                console.error('Error in closeGalleryViewModal:', error);
+            }
+        }
+
+        // Profile Modal Functions
+        function openProfileModal(imageSrc, name, role) {
+            try {
+                const modal = document.getElementById('profileModal');
+                const modalImg = document.getElementById('profileModalImage');
+                const modalName = document.getElementById('profileModalName');
+                const modalRole = document.getElementById('profileModalRole');
+
+                if (modal && modalImg && modalName && modalRole) {
+                    modal.classList.add('active');
+                    modalImg.src = imageSrc;
+                    modalName.textContent = name;
+                    modalRole.textContent = role;
+
+                    // Prevent scrolling on the background when modal is open
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch (error) {
+                console.error('Error in openProfileModal:', error);
+            }
+        }
+
+        function closeProfileModal() {
+            try {
+                const modal = document.getElementById('profileModal');
+
+                if (modal) {
+                    modal.classList.remove('active');
+
+                    // Restore scrolling on the background when modal is closed
+                    document.body.style.overflow = 'auto';
+                }
+            } catch (error) {
+                console.error('Error in closeProfileModal:', error);
+            }
+        }
+
+        // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+                // Close mobile menu when clicking on a link
+                const mobileLinks = mobileMenu.querySelectorAll('a');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+
+                // Close mobile menu when scrolling
+                window.addEventListener('scroll', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Smooth scroll animation for sections
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Close modals when clicking outside
+            window.addEventListener('click', function (event) {
+                const galleryModal = document.getElementById('galleryViewModal');
+                const profileModal = document.getElementById('profileModal');
+
+                if (event.target === galleryModal) {
+                    closeGalleryViewModal();
+                }
+
+                if (event.target === profileModal) {
+                    closeProfileModal();
+                }
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeGalleryViewModal();
+                    closeProfileModal();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
